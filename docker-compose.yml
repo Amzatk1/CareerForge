@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: careerforge
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/careerforge
+      - SECRET_KEY=your-secret-key-here
+      - OPENAI_API_KEY=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
+    depends_on:
+      - db
+    command: python manage.py runserver 0.0.0.0:8000
+
+  frontend:
+    build: ./mobile-app
+    ports:
+      - "19006:19006"
+      - "8081:8081"
+    volumes:
+      - ./mobile-app:/app
+      - /app/node_modules
+    environment:
+      - EXPO_PUBLIC_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data: 
