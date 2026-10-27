@@ -22,7 +22,7 @@ services:
       - DEBUG=True
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/careerforge
       - SECRET_KEY=your-secret-key-here
-      - OPENAI_API_KEY=REMOVED-OPENAI-API-KEY
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - db
     command: python manage.py runserver 0.0.0.0:8000
